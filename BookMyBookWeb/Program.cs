@@ -1,8 +1,27 @@
+using BookMyBookWeb.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddDbContext<ApplicationDBContext>
+    (
+        options => options.UseSqlServer
+        (
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            builder => 
+                {
+                    builder.EnableRetryOnFailure(10, TimeSpan.FromSeconds(10), null);
+                }
+        )
+    ); ;
+
+
+
+
+
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 var app = builder.Build();
 
